@@ -47,7 +47,7 @@ class MealTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+        print("tableView2")
         // Table view cells are reused and should ve dequeued using a cell identifier
         let cellIdentifier = "MealTableViewCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MealTableViewCell
@@ -106,5 +106,17 @@ class MealTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @IBAction func unwindToMealList(_ sender: UIStoryboardSegue) {
+        if let source = sender.source as? MealViewController, let meal = source.meal {
+            
+            let newIndexPath = IndexPath(row: meals.count, section: 0)
+
+            // Add a new meal
+            meals.append(meal)
+            
+            tableView.insertRows(at: [newIndexPath], with: .bottom)
+        }
+    }
 
 }

@@ -15,12 +15,19 @@ class MealViewController: UIViewController, UITextFieldDelegate,
     @IBOutlet weak var nameTextFeild: UITextField!
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var ratingControl: RatingControl!
+    @IBOutlet weak var saveButton: UIBarButtonItem!
+    
+    // This value is either passed by `MealTableViewController` in `prepare(for:sender:)`
+    // or constructed as part of adding a new meal
+    var meal: Meal?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         nameTextFeild.delegate = self
         
+        // Enable the Save button only if the text field has a valid Meal name
+        checkValidMealName()
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,6 +36,7 @@ class MealViewController: UIViewController, UITextFieldDelegate,
     }
     
     // MARK: UITextFieldDelegate
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // Hide the keyboard
         textField.resignFirstResponder()
@@ -37,7 +45,19 @@ class MealViewController: UIViewController, UITextFieldDelegate,
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
+        checkValidMealName()
+        navigationItem.title = textField.text
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // Disable the Save button while editing
+        saveButton.isEnabled = false
+    }
+    
+    func checkValidMealName(){
+        // Disable the Save button if the text field is empty
+        let text = nameTextFeild.text ?? ""
+        saveButton.isEnabled = !text.isEmpty
     }
     
     // MARK: UIImagePickerControllerDelegeate
@@ -55,6 +75,20 @@ class MealViewController: UIViewController, UITextFieldDelegate,
         dismiss(animated: true, completion: nil)
     }
 
+    // MARK: Navigations
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let sender = sender as? UIBarButtonItem, saveButton === sender {
+            let name = nameTextFeild.text ?? ""
+            let photo = photoImageView.image
+            let rating = ratingControl.rating
+            
+            meal = Meal(name: name, photo: photo, rating: rating)
+        }
+    }
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     // MARK: Actions
     @IBAction func selectImageFromPhotoLibrary(_ sender: Any) {
         // Hide the keyboard
