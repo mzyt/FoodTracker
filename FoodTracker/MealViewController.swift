@@ -23,8 +23,17 @@ class MealViewController: UIViewController, UITextFieldDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view, typically from a nib.
         nameTextFeild.delegate = self
+        
+        // Set up view if editing an existing Meal
+        if let meal = meal {
+            navigationItem.title = meal.name
+            nameTextFeild.text = meal.name
+            photoImageView.image = meal.photo
+            ratingControl.rating = meal.rating
+        }
         
         // Enable the Save button only if the text field has a valid Meal name
         checkValidMealName()
@@ -86,7 +95,17 @@ class MealViewController: UIViewController, UITextFieldDelegate,
         }
     }
     @IBAction func cancel(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
+        
+        // modalナビゲーションで繊維したか
+        let isPresentingInAddMealMode = presentingViewController is UINavigationController
+        
+        if isPresentingInAddMealMode {
+            dismiss(animated: true, completion: nil)
+        } else {
+            navigationController!.popViewController(animated: true)
+        }
+        
+        
     }
     
     // MARK: Actions
