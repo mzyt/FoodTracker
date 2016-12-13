@@ -15,8 +15,8 @@ class Meal: NSObject, NSCoding{
     var rating: Int
     
     // MARK: Archiving Paths
-    static var documentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
-    static let archiveURL = documentsDirectory.appendPathComponent("meal")
+    static let documentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
+    static let archiveURL = documentsDirectory.appendingPathComponent("meal")
     
     // MARK: Types
     struct PropertyKey {
@@ -49,10 +49,11 @@ class Meal: NSObject, NSCoding{
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
-        name = aDecoder.decodeObject(forKey: PropertyKey.nemeKey) as! String
-        photo = aDecoder.decodeObject(forKey: PropertyKey.photoKey) as? UIImage
-        rating = aDecoder.decodeObject(forKey: PropertyKey.ratingKey)
         
+        let name = aDecoder.decodeObject(forKey: PropertyKey.nemeKey) as! String
+        let photo = aDecoder.decodeObject(forKey: PropertyKey.photoKey) as? UIImage
+        let rating = aDecoder.decodeInteger(forKey: PropertyKey.ratingKey)
         
+        self.init(name:name, photo:photo, rating:rating)
     }
 }
